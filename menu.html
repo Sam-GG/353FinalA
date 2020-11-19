@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
+<style>
+    .content {
+      max-width: 500px;
+      margin: auto;
+    }
+</style>
+
+
+<body>
+    <H1> Menu</H1>
+
+    <p id="menu"> </p>
+
+    <p id="selected"></p>
+
+    <script>
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                myObj = JSON.parse(xmlhttp.responseText);
+                
+
+                var table = "<table border='1' id='menu-table' >"
+                for (x in myObj) {
+                    table += "<tr> <td> " + myObj[x].ProductName + "</td> <td>" + myObj[x].Price + "</td> </tr>";
+                }
+                table += "</table>"
+                document.getElementById("menu").innerHTML = table;
+
+                onRowClick("menu-table", function (row) {
+                    var value = row.getElementsByTagName("td")[0].innerHTML;
+                    document.getElementById('selected').innerHTML = value;
+                });
+
+            }
+        };
+
+        xmlhttp.open("GET", "/select", true);
+        xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+        xmlhttp.send();
+    </script>
+
+    <script type="text/javascript">
+        function onRowClick(tableId, callback) {
+            var table = document.getElementById(tableId),
+                rows = table.getElementsByTagName("tr"),
+                i;
+            for (i = 0; i < rows.length; i++) {
+                table.rows[i].onclick = function (row) {
+                    return function () {
+                        callback(row);
+                    };
+                }(table.rows[i]);
+            }
+        };
+    </script>
+
+
+</body>
+
+</html>
