@@ -46,7 +46,7 @@ app.get('/end', (req, res) => {
 });
 
 //Add new products to the menu
-app.post('/insert', (req, res) => {
+app.post('/addProduct', (req, res) => {
     //Get params for the new menu item from client
     product = req.body.newProduct.name;
     price = req.body.newProduct.price;
@@ -100,21 +100,16 @@ app.get('/active_orders', (req, res) => {
     //TODO:
     //SQL commands to display all the customer order tables to the client page
     //Preferably have this on a new webpage
-    //Implementation should resemble /select
+    //Implementation should resemble /menu
 })
 
 //Return menu table from database to client
-app.get('/select', (req, res) => {
-
-    var data;
-    console.log("select was hit");
+app.get('/menu', (req, res) => {
     var sql = 'SELECT * FROM menu';
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         res.json(result);
     });
-
-
 });
 
 
