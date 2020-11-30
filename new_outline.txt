@@ -1,0 +1,12 @@
+What the Coffee-Shop page must have:
+    Customers end:
+        See menu
+        Create an order (payment implementation not needed)
+        Submit order
+        Check status of order
+        Cancel order
+    
+    Employees end:
+        Create/Modify the menu
+        See all open order sorted by time (FIFO queue)
+        Inform the customer that their order is ready
