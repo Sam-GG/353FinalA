@@ -17,6 +17,11 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
+    menu{
+        text-align: center;
+        margin: auto;
+    }
 </style>
 
 <body>
@@ -27,6 +32,7 @@
     <p id="selected"></p>
 
     <script>
+        var cartList = [[]];
         xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -40,10 +46,14 @@
                 }
                 table += "</table>"
                 document.getElementById("menu").innerHTML = table;
-
+                
+                
                 onRowClick("menu-table", function (row) {
-                    var value = row.getElementsByTagName("td")[0].innerHTML;
-                    document.getElementById('selected').innerHTML = value;
+                    var product = row.getElementsByTagName("td")[0].innerHTML;
+                    var price = row.getElementsByTagName("td")[1].innerHTML;
+                    var item = [product, price]; 
+                    cartList[cartList.length] = item;
+                    document.getElementById('selected').innerHTML += (product + ', ');
                 });
 
             }
@@ -53,6 +63,29 @@
         xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
         xmlhttp.send();
     </script>
+    <br>Customer name: <br>
+    <input type='text' id='customer-name' />
+    <button type='button' value='Send' name='submitOrder' onclick='submitOrder()'>
+        Submit Order
+    </button>
+    <script type="text/javascript">
+        function submitOrder(req, res){
+            var order = {
+                cart: cartList,
+                customer: document.getElementById('customer-name').value
+            };
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("product-added").innerHTML = this.responseText;
+                };
+            };
+            xmlhttp.open("POST", "/order", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify(order));
+        };
+    </script>
+
 
     <br>Add a New Product<br>
     <br>Name: <br>
@@ -60,7 +93,7 @@
     <br>Price: <br>
     <input type='text' id='product-add-price' />
     <br>
-    <button type='button' value='Send' name='Send' onclick='addProduct()'>
+    <button type='button' value='Send' name='addProduct' onclick='addProduct()'>
         Submit
     </button>
     <p id="product-added"> </p> 
@@ -85,7 +118,7 @@
     <br>Delete Product from Menu<br>
     <br>Name: <br>
     <input type='text' id='product-delete-name' />
-    <button type='button' value='Send' name='Send' onclick='deleteProduct()'>
+    <button type='button' value='Send' name='deleteProduct' onclick='deleteProduct()'>
         Delete
     </button>
     <p id="product-deleted"> </p> 

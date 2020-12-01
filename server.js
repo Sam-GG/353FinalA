@@ -74,32 +74,29 @@ app.post('/deleteProduct', (req, res) =>{
 
 //Add orders from a cart to orders table
 app.post('/order', (req, res) => {
-    cartList = req.body.order.cart;
-    customer = req.body.order.customerName;
-    //TODO:
-    //SQL Create table command for a customer
+    var cartList = req.body.cart;
+    var customer = req.body.customer;
     //creates an order table for a single customer, named after their name
-    var sql = "CREATE TABLE " + customer + " (ProductName VARCHAR(128), Price FLOAT)";
+    var sql = "CREATE TABLE " + customer + " (ProductName varchar(128), Price FLOAT)";
     con.query(sql, function (err, result) {
-      if (err) throw err;
+        if (err) console.log(err);
     });
-    //TODO:
     //Iterate and insert the products from cartList into the table
     var i;
-    for (i = 0; i < cartList.length; i++) {
-        price = getPrice(cartList[i]);
-        var sql = "INSERT INTO " + customer + " (ProductName, Price) VALUES (" + cartList[i] + ', '  + price + ')';
+    for (i = 1; i < cartList.length; i++) {
+        var sql = "INSERT INTO " + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
         con.query(sql, function (err, result) {
-            if (err) throw err;
+            if (err) console.log(err);
         });
     } 
 });
 
 //Grabs price of a menu item given it's name
 function getPrice(productName){
-    sql= "SELECT 'Price' FROM menu WHERE ProductName = " + productName + " LIMIT 1";
-    con.query(sql, function (err, result) {
+    var sql= "SELECT 'Price' FROM menu WHERE ProductName=?";
+    con.query(sql, productName, function (err, result) {
         if (err) throw err;
+        console.log('price for:' + productName + ': ' + result);
         return result;
     });
 }
