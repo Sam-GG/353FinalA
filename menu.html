@@ -62,7 +62,39 @@
         xmlhttp.open("GET", "/menu", true);
         xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
         xmlhttp.send();
+
+        //Get Active orders and format into table w onrow click that can then request the order details
+        function getActiveOrders(req, res) {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    //document.getElementById("active-orders").innerHTML = this.responseText;
+                    var orders = JSON.parse(this.responseText)
+                    var table = "<table border='1' id='orders-table' >"
+                    var i;
+                    for (i=0; i < orders.length; i++) {
+                        table += "<tr> <td> " + orders[i] + "</td> </tr>";
+                    }
+                    table += "</table>"
+                    document.getElementById("active-orders").innerHTML = table;
+
+                    onRowClick("orders-table", function (row) {
+                    var name = row.getElementsByTagName("td")[0].innerHTML;
+                    //TODO:
+                    //Implement here a call to a function that queries and displays order information
+                    console.log(name);
+                });
+                };
+            };
+            xmlhttp.open("GET", "/activeOrders", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send();
+        };
     </script>
+    <button type='button' value='Send' name='getActiveOrders' onclick='getActiveOrders()'>
+        Get Orders
+    </button>
+    <p id='active-orders'></p>
     <br>Customer name: <br>
     <input type='text' id='customer-name' />
     <button type='button' value='Send' name='submitOrder' onclick='submitOrder()'>

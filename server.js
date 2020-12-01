@@ -77,36 +77,40 @@ app.post('/order', (req, res) => {
     var cartList = req.body.cart;
     var customer = req.body.customer;
     //creates an order table for a single customer, named after their name
-    var sql = "CREATE TABLE " + customer + " (ProductName varchar(128), Price FLOAT)";
+    var sql = "CREATE TABLE order_" + customer + " (ProductName varchar(128), Price FLOAT)";
     con.query(sql, function (err, result) {
         if (err) console.log(err);
     });
     //Iterate and insert the products from cartList into the table
     var i;
     for (i = 1; i < cartList.length; i++) {
-        var sql = "INSERT INTO " + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
+        var sql = "INSERT INTO order_" + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
         con.query(sql, function (err, result) {
             if (err) console.log(err);
         });
     } 
 });
 
-//Grabs price of a menu item given it's name
-function getPrice(productName){
-    var sql= "SELECT 'Price' FROM menu WHERE ProductName=?";
-    con.query(sql, productName, function (err, result) {
-        if (err) throw err;
-        console.log('price for:' + productName + ': ' + result);
-        return result;
-    });
-}
-
 //Display active orders
-app.get('/active_orders', (req, res) => {
-    //TODO:
+app.get('/activeOrders', (req, res) => {
     //SQL commands to display all the customer order tables to the client page
     //Preferably have this on a new webpage
     //Implementation should resemble /menu
+    //Select all tables that have the 'order_' prefix and return their names
+    var sql = `SELECT TABLE_NAME
+    FROM information_schema.tables
+    WHERE table_name like "%order%"`;
+    con.query(sql, function (err, result) {
+        if (err) console.log(err);
+        //iterate and split names of customers into a list
+        var activeOrders = [];
+        var i;
+        for (i=0; i < result.length; i++){
+            activeOrders[activeOrders.length] = result[i]['TABLE_NAME'].split('_')[1];
+        }
+        console.log(activeOrders[0]);
+        res.json(activeOrders);
+    });
 })
 
 //Return menu table from database to client
