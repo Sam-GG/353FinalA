@@ -54,6 +54,58 @@
         xmlhttp.send();
     </script>
 
+    <br>Add a New Product<br>
+    <br>Name: <br>
+    <input type='text' id='product-add-name' />
+    <br>Price: <br>
+    <input type='text' id='product-add-price' />
+    <br>
+    <button type='button' value='Send' name='Send' onclick='addProduct()'>
+        Submit
+    </button>
+    <p id="product-added"> </p> 
+    <script type="text/javascript">
+    function addProduct(req, res){
+        var product = {
+            name: document.getElementById('product-add-name').value,
+            price: document.getElementById('product-add-price').value
+        };
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("product-added").innerHTML = this.responseText;
+            };
+        };
+        xmlhttp.open("POST", "/addProduct", true);
+        xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify(product));
+    };
+    </script>
+
+    <br>Delete Product from Menu<br>
+    <br>Name: <br>
+    <input type='text' id='product-delete-name' />
+    <button type='button' value='Send' name='Send' onclick='deleteProduct()'>
+        Delete
+    </button>
+    <p id="product-deleted"> </p> 
+    <script type="text/javascript">
+    function deleteProduct(req, res){
+        var product = {
+            name: document.getElementById('product-delete-name').value,
+        };
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("product-deleted").innerHTML = this.responseText;
+            };
+        };
+        xmlhttp.open("POST", "/deleteProduct", true);
+        xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify(product));
+    };
+    </script>
+
     <script type="text/javascript">
         function onRowClick(tableId, callback) {
             var table = document.getElementById(tableId),
