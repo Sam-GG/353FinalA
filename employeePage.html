@@ -91,29 +91,32 @@
         <script>
 
             //Get Active orders and format into table w onrow click that can then request the order details
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    //document.getElementById("active-orders").innerHTML = this.responseText;
-                    var orders = JSON.parse(this.responseText)
-                    var table = "<table border='1' id='orders-table' >"
-                    var i;
-                    for (i=0; i < orders.length; i++) {
-                        table += "<tr> <td> " + orders[i] + "</td> </tr>";
-                    }
-                    table += "</table>"
-                    document.getElementById("active-orders").innerHTML = table;
+            function getActiveOrders(){
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        //document.getElementById("active-orders").innerHTML = this.responseText;
+                        var orders = JSON.parse(this.responseText)
+                        var table = "<table border='1' id='orders-table' >"
+                        var i;
+                        for (i=0; i < orders.length; i++) {
+                            table += "<tr> <td> " + orders[i] + "</td> </tr>";
+                        }
+                        table += "</table>"
+                        document.getElementById("active-orders").innerHTML = table;
 
-                    onRowClick("orders-table", function (row) {
-                        var name = row.getElementsByTagName("td")[0].innerHTML;
-                        displayOrder(name);
-                        console.log(name);
-                    });
+                        onRowClick("orders-table", function (row) {
+                            var name = row.getElementsByTagName("td")[0].innerHTML;
+                            displayOrder(name);
+                            console.log(name);
+                        });
+                    };
                 };
+                xmlhttp.open("GET", "/activeOrders", true);
+                xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                xmlhttp.send();
             };
-            xmlhttp.open("GET", "/activeOrders", true);
-            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-            xmlhttp.send();
+            getActiveOrders();
 
             function displayOrder(customerName) {
                 xmlhttp = new XMLHttpRequest();
@@ -166,6 +169,15 @@
             </button>
             <p id="product-added"> </p> 
         </aside>
+        <div class='delete-products'>
+            <H3>Delete Product from Menu</H3>
+            <br>Name: <br>
+            <input type='text' id='product-delete-name' />
+            <button type='button' value='Send' name='deleteProduct' onclick='deleteProduct()'>
+                Delete
+            </button>
+            <p id="product-deleted"> </p> 
+        </div>
         <script type="text/javascript">
         function completeOrder(orderName){
             var customerName = orderName.split("'")[0];
@@ -182,6 +194,9 @@
             xmlhttp.open("POST", "/completeOrder", true);
             xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
             xmlhttp.send(JSON.stringify(order));
+            getActiveOrders();
+            document.getElementById("display-order").innerHTML = null;
+            document.getElementById("current-order").innerHTML = null;
         };
 
         function addProduct(req, res){
@@ -200,15 +215,7 @@
             xmlhttp.send(JSON.stringify(product));
         };
         </script>
-        <div class='delete-products'>
-            <H3>Delete Product from Menu</H3>
-            <br>Name: <br>
-            <input type='text' id='product-delete-name' />
-            <button type='button' value='Send' name='deleteProduct' onclick='deleteProduct()'>
-                Delete
-            </button>
-            <p id="product-deleted"> </p> 
-        </div>
+        
         <script type="text/javascript">
         function deleteProduct(req, res){
             var product = {
