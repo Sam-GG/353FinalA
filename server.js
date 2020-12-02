@@ -23,13 +23,15 @@ var con = mysql.createConnection({
     database: '353final'
 });
 
+//Landing page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/menu.html'));
 });
-
+//Employee webpage
 app.get('/employeesOnly', (req, res) => {
     res.sendFile(path.join(__dirname + '/employeePage.html'));
 });
+//background image hosting
 app.get('/background', (req, res) => {
     res.sendFile(path.join(__dirname + '/coffee_background.png'));
 });
@@ -100,13 +102,12 @@ app.post('/order', (req, res) => {
 
 //Display active orders
 app.get('/activeOrders', (req, res) => {
-    //SQL commands to display all the customer order tables to the client page
-    //Preferably have this on a new webpage
-    //Implementation should resemble /menu
+    //SQL commands to display all the customer order tables to the client page in order FIFO
     //Select all tables that have the 'order_' prefix and return their names
     var sql = `SELECT TABLE_NAME
     FROM information_schema.tables
-    WHERE table_name like "%order%"`;
+    WHERE table_name like "%order%"
+    ORDER BY CREATE_TIME DESC`;
     con.query(sql, function (err, result) {
         if (err) console.log(err);
         //iterate and split names of customers into a list
@@ -115,7 +116,6 @@ app.get('/activeOrders', (req, res) => {
         for (i=0; i < result.length; i++){
             activeOrders[activeOrders.length] = result[i]['TABLE_NAME'].split('_')[1];
         }
-        console.log(activeOrders[0]);
         res.json(activeOrders);
     });
 })
