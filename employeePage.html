@@ -5,7 +5,7 @@
         body {
             text-align: center;
             margin: auto;
-            width: 60%;
+            width: 65%;
             padding: 8px;
             background-image: url('/background');
             background-repeat: no-repeat;
@@ -46,6 +46,9 @@
 
         .orders{
             background-color: #a88c66;
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
             border-collapse: collapse;
             width: 31%;
             float: left;
@@ -54,6 +57,9 @@
         }
         .add-products{
             background-color: #d4c4b2;
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
             border-collapse: collapse;
             width: 31%;
             float: left;
@@ -62,6 +68,9 @@
         }
         .delete-products{
             background-color: #a88c66;
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
             border-collapse: collapse;
             width: 31%;
             float: left;
@@ -115,7 +124,6 @@
                         var table = "<table border='1' id='orders-table' >"
                         var i;
                         myObj = JSON.parse(xmlhttp.responseText);
-
 
                     var table = "<table border='1' id='menu-table' >"
                     for (x in myObj) {
