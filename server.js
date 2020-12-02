@@ -113,6 +113,16 @@ app.get('/activeOrders', (req, res) => {
     });
 })
 
+app.post('/displayOrder', (req, res) => {
+    var name = req.body.name;
+    name = name.trim();
+    var sql = 'SELECT * FROM order_'+name;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 //Return menu table from database to client
 app.get('/menu', (req, res) => {
     var sql = 'SELECT * FROM menu';

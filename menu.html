@@ -18,10 +18,23 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    menu{
+    table {
+        border-collapse: collapse;
         text-align: center;
         margin: auto;
     }
+
+    tr:nth-child(even) {background-color: #b5d5fa;}
+    tr:nth-child(odd) {background-color: #97afd4;}
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    tr:hover {background-color: #f5f5f5;}
+
+
 </style>
 
 <body>
@@ -79,22 +92,50 @@
                     document.getElementById("active-orders").innerHTML = table;
 
                     onRowClick("orders-table", function (row) {
-                    var name = row.getElementsByTagName("td")[0].innerHTML;
-                    //TODO:
-                    //Implement here a call to a function that queries and displays order information
-                    console.log(name);
-                });
+                        var name = row.getElementsByTagName("td")[0].innerHTML;
+                        displayOrder(name);
+                        console.log(name);
+                    });
                 };
             };
             xmlhttp.open("GET", "/activeOrders", true);
             xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
             xmlhttp.send();
         };
+
+        function displayOrder(customerName) {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    //document.getElementById("active-orders").innerHTML = this.responseText;
+                    var orders = JSON.parse(this.responseText)
+                    var table = "<table border='1' id='orders-table' >"
+                    var i;
+                    myObj = JSON.parse(xmlhttp.responseText);
+
+
+                var table = "<table border='1' id='menu-table' >"
+                for (x in myObj) {
+                    table += "<tr> <td> " + myObj[x].ProductName + "</td> <td>" + myObj[x].Price + "</td> </tr>";
+                }
+                table += "</table>"
+                document.getElementById("display-order").innerHTML = table;
+                };
+            };
+            console.log('customer name: ' + customerName);
+            orderName = {
+                name: customerName
+            }
+            xmlhttp.open("POST", "/displayOrder", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify(orderName));
+        };
     </script>
     <button type='button' value='Send' name='getActiveOrders' onclick='getActiveOrders()'>
         Get Orders
     </button>
     <p id='active-orders'></p>
+    <p id='display-order'></p>
     <br>Customer name: <br>
     <input type='text' id='customer-name' />
     <button type='button' value='Send' name='submitOrder' onclick='submitOrder()'>
