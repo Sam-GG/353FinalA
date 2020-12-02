@@ -149,6 +149,9 @@
                 <p id='active-orders'></p>
                 <p id='current-order'></p>
                 <p id='display-order'></p>
+                <button type='button' value='Send' name='completeOrder' onclick='completeOrder(document.getElementById("current-order").innerHTML)'>
+                    Complete Order
+                </button>
             </div>
         </section>
         <aside class='add-products'>
@@ -164,6 +167,23 @@
             <p id="product-added"> </p> 
         </aside>
         <script type="text/javascript">
+        function completeOrder(orderName){
+            var customerName = orderName.split("'")[0];
+            order = {
+                name: customerName
+            }
+            console.log(customerName);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                };
+            };
+            xmlhttp.open("POST", "/completeOrder", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify(order));
+        };
+
         function addProduct(req, res){
             var product = {
                 name: document.getElementById('product-add-name').value,

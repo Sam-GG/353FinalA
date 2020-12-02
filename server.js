@@ -130,6 +130,17 @@ app.post('/displayOrder', (req, res) => {
     });
 });
 
+app.post('/completeOrder', (req, res) => {
+    var customerName = req.body.name.trim();
+    console.log(customerName);
+    var tableName = 'order_' + customerName;
+    var sql = 'DROP TABLE '+tableName;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+})
+
 //Return menu table from database to client
 app.get('/menu', (req, res) => {
     var sql = 'SELECT * FROM menu';
