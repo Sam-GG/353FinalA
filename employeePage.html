@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html>
+    <style>
+        body {
+            text-align: center;
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+            background-color: #a6bfdf5e;
+            text-shadow: #FFFFFF 0px 1px 0px;
+        
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        table {
+            border-collapse: collapse;
+            text-align: center;
+            margin: auto;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #b5d5fa;
+        }
+        
+        tr:nth-child(odd) {
+            background-color: #97afd4;
+        }
+        
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+
+    <title>Employee's Only</title>
+
+    <body>
+
+        <script>
+
+            //Get Active orders and format into table w onrow click that can then request the order details
+            function getActiveOrders(req, res) {
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        //document.getElementById("active-orders").innerHTML = this.responseText;
+                        var orders = JSON.parse(this.responseText)
+                        var table = "<table border='1' id='orders-table' >"
+                        var i;
+                        for (i=0; i < orders.length; i++) {
+                            table += "<tr> <td> " + orders[i] + "</td> </tr>";
+                        }
+                        table += "</table>"
+                        document.getElementById("active-orders").innerHTML = table;
+
+                        onRowClick("orders-table", function (row) {
+                            var name = row.getElementsByTagName("td")[0].innerHTML;
+                            displayOrder(name);
+                            console.log(name);
+                        });
+                    };
+                };
+                xmlhttp.open("GET", "/activeOrders", true);
+                xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                xmlhttp.send();
+            };
+
+            function displayOrder(customerName) {
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        //document.getElementById("active-orders").innerHTML = this.responseText;
+                        var orders = JSON.parse(this.responseText)
+                        var table = "<table border='1' id='orders-table' >"
+                        var i;
+                        myObj = JSON.parse(xmlhttp.responseText);
+
+
+                    var table = "<table border='1' id='menu-table' >"
+                    for (x in myObj) {
+                        table += "<tr> <td> " + myObj[x].ProductName + "</td> <td>" + myObj[x].Price + "</td> </tr>";
+                    }
+                    table += "</table>"
+                    document.getElementById("display-order").innerHTML = table;
+                    };
+                };
+                console.log('customer name: ' + customerName);
+                orderName = {
+                    name: customerName
+                }
+                xmlhttp.open("POST", "/displayOrder", true);
+                xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                xmlhttp.send(JSON.stringify(orderName));
+            };
+        </script>
+        <button type='button' value='Send' name='getActiveOrders' onclick='getActiveOrders()'>
+            Get Orders
+        </button>
+        <p id='active-orders'></p>
+        <p id='display-order'></p>
+
+        <br>Add a New Product<br>
+        <br>Name: <br>
+        <input type='text' id='product-add-name' />
+        <br>Price: <br>
+        <input type='text' id='product-add-price' />
+        <br>
+        <button type='button' value='Send' name='addProduct' onclick='addProduct()'>
+            Submit
+        </button>
+        <p id="product-added"> </p> 
+        <script type="text/javascript">
+        function addProduct(req, res){
+            var product = {
+                name: document.getElementById('product-add-name').value,
+                price: document.getElementById('product-add-price').value
+            };
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("product-added").innerHTML = this.responseText;
+                };
+            };
+            xmlhttp.open("POST", "/addProduct", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify(product));
+        };
+        </script>
+
+        <br>Delete Product from Menu<br>
+        <br>Name: <br>
+        <input type='text' id='product-delete-name' />
+        <button type='button' value='Send' name='deleteProduct' onclick='deleteProduct()'>
+            Delete
+        </button>
+        <p id="product-deleted"> </p> 
+        <script type="text/javascript">
+        function deleteProduct(req, res){
+            var product = {
+                name: document.getElementById('product-delete-name').value,
+            };
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("product-deleted").innerHTML = this.responseText;
+                };
+            };
+            xmlhttp.open("POST", "/deleteProduct", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xmlhttp.send(JSON.stringify(product));
+        };
+
+        function onRowClick(tableId, callback) {
+            var table = document.getElementById(tableId),
+                rows = table.getElementsByTagName("tr"),
+                i;
+            for (i = 0; i < rows.length; i++) {
+                table.rows[i].onclick = function (row) {
+                    return function () {
+                        callback(row);
+                    };
+                }(table.rows[i]);
+            }
+        };
+
+        </script>
+
+    </body>
+</html>
