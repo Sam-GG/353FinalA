@@ -29,8 +29,9 @@ app.get('/', (req, res) => {
 
 app.get('/employeesOnly', (req, res) => {
     res.sendFile(path.join(__dirname + '/employeePage.html'));
-    //res.render(path.join(__dirname + '/employeePage.html'));
-    //return res.redirect('/employeePage.html');
+});
+app.get('/background', (req, res) => {
+    res.sendFile(path.join(__dirname + '/coffee_background.png'));
 });
 
 //Establish connection
