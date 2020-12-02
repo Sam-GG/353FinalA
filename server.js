@@ -27,6 +27,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/menu.html'));
 });
 
+app.get('/employeesOnly', (req, res) => {
+    res.sendFile(path.join(__dirname + '/employeePage.html'));
+});
+
 //Establish connection
 con.connect((err) => {
     if(err){
