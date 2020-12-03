@@ -72,11 +72,13 @@ app.post('/addProduct', (req, res) => {
 
 //Delete products from menu
 app.post('/deleteProduct', (req, res) =>{
-    var product = req.body.name;
+    var product = req.body.name.trim();
     //query a delete from the menu table
     var sql = 'DELETE FROM menu WHERE ProductName = ?'
+    console.log(product);
     con.query(sql, product, function (err, result) {
         if (err) console.log(err);
+        console.log(result);
         res.send('Success.');
     });
 })
@@ -95,7 +97,8 @@ app.post('/order', (req, res) => {
     for (i = 1; i < cartList.length; i++) {
         var sql = "INSERT INTO order_" + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
         con.query(sql, function (err, result) {
-            if (err) console.log(err);
+            if (err) {console.log(err)}
+            console.log(result);
         });
     } 
 });
@@ -136,8 +139,11 @@ app.post('/completeOrder', (req, res) => {
     var tableName = 'order_' + customerName;
     var sql = 'DROP TABLE '+tableName;
     con.query(sql, function (err, result) {
-        if (err) throw err;
-        res.json(result);
+        if (err) {throw err}
+        else{
+            res.json(customerName);
+        };
+        
     });
 })
 

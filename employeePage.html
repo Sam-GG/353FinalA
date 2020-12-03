@@ -84,7 +84,7 @@
         </a>  
     </nav>
 
-    <title>Employee's Only</title>
+    <title>Employees Only</title>
 
     <body>
 
@@ -188,7 +188,7 @@
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
+                    console.log("LOOK HERE: ", this.responseText);
                 };
             };
             xmlhttp.open("POST", "/completeOrder", true);
@@ -198,6 +198,7 @@
             document.getElementById("display-order").innerHTML = null;
             document.getElementById("current-order").innerHTML = null;
         };
+
 
         function addProduct(req, res){
             var product = {
@@ -221,6 +222,7 @@
             var product = {
                 name: document.getElementById('product-delete-name').value,
             };
+            console.log(document.getElementById('product-delete-name').value);
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
