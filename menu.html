@@ -56,17 +56,6 @@
             width: 50%;
         }
 
-        .orders-ready{
-            padding: 8px;
-            background-color: #d4c4b2;
-            border-style: solid;
-            border-width: 1px;
-            border-color: black;
-            border-collapse: collapse;
-            text-align: center;
-            margin: auto;
-            width: 50%;
-        }
     </style>
 
 <title>Coffee Shop</title>
@@ -75,7 +64,7 @@
     <a href="/employeesOnly">
         <button>Employees Only</button>
     </a>  
-    <a href="/employeesOnly">
+    <a href="/isOrderReady">
         <button>Is my Order Ready?</button>
     </a>  
 </nav>
@@ -96,10 +85,6 @@
         <button type='button' value='Send' name='cancelOrder' onclick='cancelOrder()'>
             Cancel
         </button>
-    </div>
-    <br>
-    <div class='orders-ready'>
-        <p id='ready'></p>
     </div>
     <br>
     <script>
@@ -134,21 +119,6 @@
         xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
         xmlhttp.send();
 
-        //setTimeout(checkOrderReady(), 500);
-
-        function checkOrderReady(){
-            xmlhttpp = new XMLHttpRequest();
-            xmlhttpp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log('Order completed for: '+ this.responseText);
-                };
-            };
-            xmlhttpp.open("GET", "/completeOrder", true);
-            xmlhttpp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-            xmlhttpp.send();
-        };
-
-        checkOrderReady();
         function cancelOrder(){
             document.getElementById('selected').innerHTML = null;
             cartList = [[]];

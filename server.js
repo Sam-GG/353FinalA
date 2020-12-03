@@ -31,10 +31,15 @@ app.get('/', (req, res) => {
 app.get('/employeesOnly', (req, res) => {
     res.sendFile(path.join(__dirname + '/employeePage.html'));
 });
+//Is my order ready? page
+app.get('/isOrderReady', (req, res) => {
+    res.sendFile(path.join(__dirname + '/orderReadyPage.html'));
+});
 //background image hosting
 app.get('/background', (req, res) => {
     res.sendFile(path.join(__dirname + '/coffee_background.png'));
 });
+
 
 //Establish connection
 con.connect((err) => {
@@ -141,11 +146,29 @@ app.post('/completeOrder', (req, res) => {
     con.query(sql, function (err, result) {
         if (err) {throw err}
         else{
-            res.json(customerName);
+            res.json('Order completed.');
         };
-        
     });
-})
+    var sql_2 = 'INSERT INTO completed (name) VALUES (?)'
+    con.query(sql_2, (customerName), function (err, result) {
+        if (err) {throw err}
+        console.log(result)
+    });
+});
+
+app.post('/checkOrderReady', (req, res) => {
+    var name = req.body.name;
+    console.log(name);
+    var sql = 'SELECT * FROM completed';
+    con.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        if (result[0]['name'] == name){
+            res.send('Order Completed!')
+        } else {
+            res.send('Order not ready yet!')
+        }
+    });
+});
 
 //Return menu table from database to client
 app.get('/menu', (req, res) => {

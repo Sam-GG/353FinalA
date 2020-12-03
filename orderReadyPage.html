@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+    <style>
+        body {
+            text-align: center;
+            margin: auto;
+            width: 65%;
+            padding: 8px;
+            background-image: url('/background');
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-shadow:#7a6951 0px 0.5px 0px;
+        
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .orders-ready{
+            padding: 8px;
+            background-color: #d4c4b2;
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+            border-collapse: collapse;
+            text-align: center;
+            margin: auto;
+            width: 50%;
+        }
+    </style>
+    <nav>
+        <a href="/">
+            <button>Back to Menu</button>
+        </a>  
+    </nav>
+
+    <title>Is my Order Ready?</title>
+
+    <body>
+        <br><br>
+        <div class='orders-ready'>
+            Type your name into the box to see if your order is ready.
+            <br><br>
+            <input type='text' id='order-name' />
+            <button type='button' value='Send' name='checkOrderReady' onclick='checkOrderReady(document.getElementById("order-name").value)'>
+                Check if my order is ready
+            </button>
+            <p id='ready'></p>
+        </div>
+
+        <script>
+            function checkOrderReady(orderName){
+                
+                console.log(orderName);
+                order = {
+                    name: orderName
+                }
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("ready").innerHTML = this.responseText;
+                    };
+                };
+                xmlhttp.open("POST", "/checkOrderReady", true);
+                xmlhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                xmlhttp.send(JSON.stringify(order));
+            }
+        </script>
+    </body>
