@@ -45,11 +45,13 @@ app.get('/background', (req, res) => {
 con.connect((err) => {
     if(err){
         console.log('MySQL NOT connected.');
-        throw err;
-    }
-    console.log('MySql connected.');
+        console.log(err);
+    }else{
+        console.log('MySql connected.');
+    };
 });
 
+//End Database connection
 app.get('/end', (req, res) => {
 
     con.end(function (err) {
@@ -70,7 +72,7 @@ app.post('/addProduct', (req, res) => {
     //Insert into menu table in database
     var sql = "INSERT INTO menu (ProductName, Price) VALUES ('" + product + "', " + price + ")";
     con.query(sql, function (err, result) {
-        if (err) throw err;
+        if (err) console.log(err);
         res.send('Success.');
     });
 });
@@ -102,7 +104,7 @@ app.post('/order', (req, res) => {
     for (i = 1; i < cartList.length; i++) {
         var sql = "INSERT INTO order_" + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
         con.query(sql, function (err, result) {
-            if (err) {console.log(err)}
+            if (err) console.log(err);
             console.log(result);
         });
     } 
@@ -128,6 +130,7 @@ app.get('/activeOrders', (req, res) => {
     });
 })
 
+//Return Order information of a given customer to the employee page
 app.post('/displayOrder', (req, res) => {
     var name = req.body.name;
     name = name.trim();
@@ -138,35 +141,40 @@ app.post('/displayOrder', (req, res) => {
     });
 });
 
+//Complete's an order. 
+//Drops the customers order table and adds them to the table of completed orders
 app.post('/completeOrder', (req, res) => {
     var customerName = req.body.name.trim();
     console.log(customerName);
     var tableName = 'order_' + customerName;
     var sql = 'DROP TABLE '+tableName;
     con.query(sql, function (err, result) {
-        if (err) {throw err}
+        if (err) {console.log(err)}
         else{
             res.json('Order completed.');
         };
     });
     var sql_2 = 'INSERT INTO completed (name) VALUES (?)'
     con.query(sql_2, (customerName), function (err, result) {
-        if (err) {throw err}
+        if (err) console.log(err);
         console.log(result)
     });
 });
 
+//Checks to see if customer's name is in the table of completed orders
 app.post('/checkOrderReady', (req, res) => {
     var name = req.body.name;
     console.log(name);
     var sql = 'SELECT * FROM completed';
     con.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        if (result[0]['name'] == name){
-            res.send('Order Completed!')
-        } else {
-            res.send('Order not ready yet!')
-        }
+        if (err) console.log(err);
+        var i;
+        for (i=0; i < result.length; i++){
+            if (result[i]['name'] == name){
+                return res.send('Order Completed!');
+            };
+        } ;
+        res.send('Order not yet completed.')
     });
 });
 
