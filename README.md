@@ -11,8 +11,6 @@ Use:
   
   Run 'npm start'
   
-  Hop into the 'src' directory and run 'node server.js'
-  
-  Navigate to the port React specifies in the terminal if it does not open automatically.
+  Navigate to the port specified in the terminal.
   
 Requires setup of an MySQL database as specified by the SQL setup text file. Likely have to change values in server.js to match your db.
