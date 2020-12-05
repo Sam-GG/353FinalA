@@ -19,7 +19,7 @@ const HOST = '0.0.0.0';
 var con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '9043',
+    password: 'admin',
     database: '353final'
 });
 
