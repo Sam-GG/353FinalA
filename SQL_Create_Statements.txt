@@ -1,0 +1,12 @@
+CREATE DATABASE `353final` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+CREATE TABLE `completed` (
+  `name` varchar(250) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `menu` (
+  `ProductName` varchar(128) NOT NULL,
+  `Price` float DEFAULT NULL,
+  PRIMARY KEY (`ProductName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
