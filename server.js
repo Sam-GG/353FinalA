@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-const axios = require('axios');
 var mysql = require('mysql');
 
 const PORT = 8080;
@@ -53,20 +52,17 @@ con.connect((err) => {
 
 //End Database connection
 app.get('/end', (req, res) => {
-
     con.end(function (err) {
         if (err) console.log(err);
         console.log("off");
     });
-
-    res.send("ok");
+    res.send("Connection ended.");
 });
 
 //Add new products to the menu
 app.post('/addProduct', (req, res) => {
+    console.log('Adding Product:');
     //Get params for the new menu item from client
-    console.log(req.body.name);
-    console.log(req.body)
     var product = req.body.name;
     var price = req.body.price;
     //Insert into menu table in database
@@ -79,19 +75,27 @@ app.post('/addProduct', (req, res) => {
 
 //Delete products from menu
 app.post('/deleteProduct', (req, res) =>{
+    console.log('Deleting Product: ');
     var product = req.body.name.trim();
     //query a delete from the menu table
     var sql = 'DELETE FROM menu WHERE ProductName = ?'
     console.log(product);
     con.query(sql, product, function (err, result) {
-        if (err) console.log(err);
+        if (err){
+            console.log(err);
+            return res.send('Error deleting product. Is the name spelled correctly?');
+        }
         console.log(result);
+        if (result['affectedRows'] == 0){
+            return res.send('Product not removed. Is the name spelled correctly?');
+        }
         res.send('Success.');
     });
 })
 
 //Add orders from a cart to orders table
 app.post('/order', (req, res) => {
+    console.log('Order Submission: ');
     var cartList = req.body.cart;
     var customer = req.body.customer;
     //creates an order table for a single customer, named after their name
@@ -104,14 +108,18 @@ app.post('/order', (req, res) => {
     for (i = 1; i < cartList.length; i++) {
         var sql = "INSERT INTO order_" + customer + " (ProductName, Price) VALUES ('"+cartList[i][0]+"', "+cartList[i][1]+")";
         con.query(sql, function (err, result) {
-            if (err) console.log(err);
+            if (err) {
+                console.log(err);
+            }
             console.log(result);
         });
     } 
+    res.send('Order submitted.')
 });
 
 //Display active orders
 app.get('/activeOrders', (req, res) => {
+    console.log('Loading active orders: ');
     //SQL commands to display all the customer order tables to the client page in order FIFO
     //Select all tables that have the 'order_' prefix and return their names
     var sql = `SELECT TABLE_NAME
@@ -132,6 +140,7 @@ app.get('/activeOrders', (req, res) => {
 
 //Return Order information of a given customer to the employee page
 app.post('/displayOrder', (req, res) => {
+    console.log('Returning contents of an order: ');
     var name = req.body.name;
     name = name.trim();
     var sql = 'SELECT * FROM order_'+name;
@@ -144,8 +153,8 @@ app.post('/displayOrder', (req, res) => {
 //Complete's an order. 
 //Drops the customers order table and adds them to the table of completed orders
 app.post('/completeOrder', (req, res) => {
+    console.log('Completing an order: ');
     var customerName = req.body.name.trim();
-    console.log(customerName);
     var tableName = 'order_' + customerName;
     var sql = 'DROP TABLE '+tableName;
     con.query(sql, function (err, result) {
@@ -164,7 +173,6 @@ app.post('/completeOrder', (req, res) => {
 //Checks to see if customer's name is in the table of completed orders
 app.post('/checkOrderReady', (req, res) => {
     var name = req.body.name;
-    console.log(name);
     var sql = 'SELECT * FROM completed';
     con.query(sql, function (err, result, fields) {
         if (err) console.log(err);
@@ -189,7 +197,7 @@ app.get('/menu', (req, res) => {
 
 
 app.use('/', express.static('pages'));
-console.log('up and running');
+console.log('up and running on port 8080');
 
 
 app.listen(PORT, HOST);

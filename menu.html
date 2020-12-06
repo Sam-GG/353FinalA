@@ -101,6 +101,7 @@
         <button type='button' value='Send' name='cancelOrder' onclick='cancelOrder()'>
             Cancel
         </button>
+        <p id='confirmation-submission'></p>
     </div>
     <br>
     <script>
@@ -151,6 +152,7 @@
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     console.log('Submitted order. Response: '+ this.responseText);
+                    document.getElementById('confirmation-submission').innerHTML = this.responseText;
                 };
             };
             xmlhttp.open("POST", "/order", true);
