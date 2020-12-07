@@ -174,7 +174,7 @@ app.post('/completeOrder', (req, res) => {
 app.post('/checkOrderReady', (req, res) => {
     var name = req.body.name;
     var sql = 'SELECT * FROM completed';
-    con.query(sql, function (err, result, fields) {
+    con.query(sql, function (err, result) {
         if (err) console.log(err);
         var i;
         for (i=0; i < result.length; i++){
@@ -189,7 +189,7 @@ app.post('/checkOrderReady', (req, res) => {
 //Return menu table from database to client
 app.get('/menu', (req, res) => {
     var sql = 'SELECT * FROM menu';
-    con.query(sql, function (err, result, fields) {
+    con.query(sql, function (err, result) {
         if (err) throw err;
         res.json(result);
     });
