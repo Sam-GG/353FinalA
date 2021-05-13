@@ -5,6 +5,7 @@ Directed to use NodeJS, express library, body-parser and no other major librarie
 
 Use:
 
+```
   Clone the project
   
   Run 'npm install' in the root of the directory
@@ -12,5 +13,6 @@ Use:
   Run 'npm start'
   
   Navigate to the port specified in the terminal.
+```
   
 Requires setup of an MySQL database as specified by the SQL setup text file. Likely have to change values in server.js to match your db.
